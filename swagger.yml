@@ -1,0 +1,204 @@
+swagger: "2.0"
+host: localhost:80
+info:
+  contact: {}
+  description: API Server for TodoList Application
+  title: Todo App API
+  version: "1.0"
+basePath: /
+definitions:
+  error:
+    type: string
+  Sub:
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      todoId:
+        type: string
+        format: uuid
+    type: object
+  Todo:
+    properties:
+      id:
+        type: string
+        format: uuid
+      deadline:
+        type: string
+        example: "2022-09-22T12:42:31Z"
+      name:
+        type: string
+      subs:
+        items:
+          $ref: '#/definitions/Sub'
+        type: array
+    type: object
+  PostPutTodoRequest:
+    properties:
+      deadline:
+        example: "2022-09-22T12:42:31Z"
+        type: string
+      name:
+        type: string
+      subs:
+        items:
+          $ref: '#/definitions/SubForPostPutInsertion'
+        type: array
+    type: object
+  SubForPostPutInsertion:
+    properties:
+      name:
+        type: string
+    type: object
+paths:
+  /todos:
+    post:
+      consumes:
+        - application/json
+      description: Create new todo
+      parameters:
+        - description: New Todo
+          in: body
+          name: input
+          required: true
+          schema:
+            $ref: '#/definitions/PostPutTodoRequest'
+      produces:
+        - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/Todo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error'
+      summary: CreateTodo
+      tags:
+        - todo
+  /todos/{todo_id}:
+    get:
+      consumes:
+        - application/json
+      description: Get existed TODO
+      parameters:
+        - description: Todo's id
+          in: path
+          name: todo_id
+          required: true
+          type: string
+          format: uuid
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/Todo'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error'
+      summary: GetToDoById
+      tags:
+        - todo
+    put:
+      consumes:
+        - application/json
+      description: Update existed TODO
+      parameters:
+        - description: Todo's id
+          in: path
+          name: todo_id
+          required: true
+          type: string
+          format: uuid
+        - description: New Todo
+          in: body
+          name: input
+          required: true
+          schema:
+            $ref: '#/definitions/PostPutTodoRequest'
+      produces:
+        - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/Todo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error'
+      summary: UpdateTodo
+      tags:
+        - todo
+  /subs/{sub_id}:
+    put:
+      consumes:
+        - application/json
+      description: Update existed Sub
+      parameters:
+        - description: Sub's id
+          in: path
+          name: sub_id
+          required: true
+          type: string
+          format: uuid
+        - description: Update Sub
+          in: body
+          name: input
+          required: true
+          schema:
+            $ref: '#/definitions/SubForPostPutInsertion'
+      produces:
+        - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/Sub'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error'
+      summary: UpdateSub
+      tags:
+        - sub
